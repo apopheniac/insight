@@ -8,11 +8,14 @@ authors = ["Sam Kitonyi <sam.kitonyi@gmail.com>"]
 python = "^3.9"
 dash = "^1.18.1"
 pandas = "^1.2.0"
+google-api-python-client = "^1.12.8"
+google-auth-httplib2 = "^0.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^20.8b1"
 pylint = "^2.6.0"
+rope = "^0.18.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
