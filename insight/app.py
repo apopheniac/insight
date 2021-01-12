@@ -3,8 +3,6 @@ import os
 from typing import List
 
 from apiclient import discovery  # type: ignore
-from google.oauth2 import service_account  # type: ignore
-
 import dash  # type: ignore
 import dash_table  # type: ignore
 import dash_core_components as dcc  # type: ignore
