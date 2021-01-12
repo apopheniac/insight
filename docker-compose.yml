@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python insight/app.py
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - 8050:8050
