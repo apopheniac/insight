@@ -9,15 +9,14 @@ import dash  # type: ignore
 import dash_table  # type: ignore
 import dash_core_components as dcc  # type: ignore
 import dash_html_components as html  # type: ignore
-import plotly.express as px  # type: ignore
 import pandas as pd  # type: ignore
+import plotly.express as px  # type: ignore
+from dotenv import load_dotenv  # type: ignore
 
-scopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-secret_file = os.path.join(os.getcwd(), "client_secret.json")
-credentials = service_account.Credentials.from_service_account_file(
-    secret_file, scopes=scopes
-)
-service = discovery.build("sheets", "v4", credentials=credentials)
+load_dotenv()
+
+
+service = discovery.build("sheets", "v4")
 spreadsheet_id = "1d-OnGMQG8IlPIG2Ru2SmiH2n9klzMxivfb3mD3imRBE"
 range_name = "Financial Data"
 
@@ -33,8 +32,8 @@ data = [{column_names[i]: row[i] for i in range(len(row))} for row in values[1:]
 columns = [{"name": c, "id": c} for c in column_names]
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 app.layout = html.Div(
     children=[
@@ -43,6 +42,8 @@ app.layout = html.Div(
             id="table",
             columns=columns,
             data=data,
+            page_size=50,
+            style_table={"height": "500px", "overflowY": "auto"},
         ),
     ]
 )
