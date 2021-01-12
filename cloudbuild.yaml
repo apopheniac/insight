@@ -1,0 +1,22 @@
+steps:
+- name: 'gcr.io/kaniko-project/executor:latest'
+  id: Build
+  args:
+  - --destination=europe-west1-docker.pkg.dev/$PROJECT_ID/insight/web
+  - --cache=true
+  - --cache-ttl=6h
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: Deploy
+  entrypoint: gcloud
+  args: 
+    - 'run'
+    - 'deploy'
+    - 'insight'
+    - '--image'
+    - 'europe-west1-docker.pkg.dev/$PROJECT_ID/insight/web'
+    - '--region'
+    - 'europe-west1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+
