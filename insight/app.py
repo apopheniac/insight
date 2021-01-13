@@ -15,8 +15,10 @@ from dotenv import load_dotenv  # type: ignore
 
 load_dotenv()
 
+SheetData = List[List[str]]
 
-def fetch_data() -> List[List[str]]:
+
+def fetch_data() -> SheetData:
     service = discovery.build("sheets", "v4")
     # TODO: move spreadsheet parameters into config
     spreadsheet_id = "1d-OnGMQG8IlPIG2Ru2SmiH2n9klzMxivfb3mD3imRBE"
@@ -43,7 +45,7 @@ def to_decimal(s: str) -> Optional[Decimal]:  # pylint: disable=unsubscriptable-
         return None
 
 
-def to_dataframe(values: List[List[str]]) -> pd.DataFrame:
+def to_dataframe(values: SheetData) -> pd.DataFrame:
     headers = [s.strip() for s in values[0]]
     rows = values[1:]
     return pd.DataFrame(rows, columns=headers)
@@ -54,9 +56,6 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
         "Sales": df["Sales"].apply(to_decimal),
         "COGS": df["COGS"].apply(to_decimal),
         "Profit": df["Profit"].apply(to_decimal),
-        "Department": df["Department"],
-        "Product": df["Product"],
-        "Date": pd.to_datetime(df["Date"], format="%m/%d/%Y").dt.date,
     }
     return pd.DataFrame(frame)
 
