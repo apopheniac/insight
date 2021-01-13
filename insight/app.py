@@ -64,12 +64,38 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 
 
 df = clean(to_dataframe(fetch_data()))
+departments = df["Department"].unique()
+products = df["Product"].unique()
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
-    children=[
+    [
         html.H1(children="Hello Dash"),
+        html.Div(
+            [
+                html.Div(
+                    [
+                        dcc.Dropdown(
+                            id="department_filter",
+                            options=[{"label": d, "value": d} for d in departments],
+                            value="Department",
+                        )
+                    ],
+                    style={"width": "48%", "display": "inline-block"},
+                ),
+                html.Div(
+                    [
+                        dcc.Dropdown(
+                            id="product_filter",
+                            options=[{"label": p, "value": p} for p in products],
+                            value="Product",
+                        )
+                    ],
+                    style={"width": "48%", "display": "inline-block", "float": "right"},
+                ),
+            ]
+        ),
         dash_table.DataTable(
             id="table",
             columns=[{"name": i, "id": i} for i in df.columns],
