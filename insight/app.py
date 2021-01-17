@@ -2,13 +2,16 @@ import httplib2  # type: ignore
 import os
 import re
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Dict, Optional, Any
 
 from apiclient import discovery  # type: ignore
 import dash  # type: ignore
 import dash_table  # type: ignore
 import dash_core_components as dcc  # type: ignore
 import dash_html_components as html  # type: ignore
+from dash.dependencies import Input, Output, State  # type: ignore
+from dash_extensions import Download  # type: ignore
+from dash_extensions.snippets import send_data_frame  # type: ignore
 import pandas as pd  # type: ignore
 import plotly.express as px  # type: ignore
 from dotenv import load_dotenv  # type: ignore
@@ -70,7 +73,9 @@ products = df["Product"].unique()
 fig = px.bar(df, x="Date", y="Sales", color="Product")
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(
+    __name__, external_stylesheets=external_stylesheets, prevent_initial_callbacks=True
+)
 app.layout = html.Div(
     [
         html.H1(children="Hello Dash"),
@@ -79,22 +84,28 @@ app.layout = html.Div(
                 dcc.Graph(id="bar-chart", figure=fig),
             ]
         ),
+        html.Div(
+            [
                 html.Div(
                     [
                         dcc.Dropdown(
-                            id="department_filter",
+                            id="department-filter",
                             options=[{"label": d, "value": d} for d in departments],
-                            value="Department",
-                        )
+                        ),
+                        html.Div(
+                            [
+                                html.Button("Download", id="download-button"),
+                                Download(id="download"),
+                            ]
+                        ),
                     ],
                     style={"width": "48%", "display": "inline-block"},
                 ),
                 html.Div(
                     [
                         dcc.Dropdown(
-                            id="product_filter",
+                            id="product-filter",
                             options=[{"label": p, "value": p} for p in products],
-                            value="Product",
                         )
                     ],
                     style={"width": "48%", "display": "inline-block", "float": "right"},
@@ -102,14 +113,50 @@ app.layout = html.Div(
             ]
         ),
         dash_table.DataTable(
-            id="table",
+            id="sales-table",
             columns=[{"name": i, "id": i} for i in df.columns],
             data=df.to_dict("records"),
             fixed_rows={"headers": True, "data": 0},
         ),
     ]
 )
-server = app.server
 
+
+def apply_filters(
+    df: pd.DataFrame, department: Optional[str], product: Optional[str]
+) -> pd.DataFrame:
+    mask = pd.Series(True, index=df.index)
+    if department:
+        mask = mask & (df["Department"] == department)
+    if product:
+        mask = mask & (df["Product"] == product)
+
+    return df[mask]
+
+
+@app.callback(
+    Output("sales-table", "data"),
+    Input("department-filter", "value"),
+    Input("product-filter", "value"),
+)
+def update_table(
+    department: Optional[str], product: Optional[str]
+) -> List[Dict[str, Any]]:
+    return apply_filters(df, department, product).to_dict("records")
+
+
+@app.callback(
+    Output("download", "data"),
+    Input("download-button", "n_clicks"),
+    State("department-filter", "value"),
+    State("product-filter", "value"),
+)
+def handle_download(n_clicks: int, department: Optional[str], product: Optional[str]):
+    dff = apply_filters(df, department, product)
+    filename = "-".join([s for s in ("Sales", department, product) if s])
+    return send_data_frame(dff.to_csv, f"{filename}.csv")
+
+
+server = app.server
 if __name__ == "__main__":
     app.run_server(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8050)))
