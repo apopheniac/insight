@@ -9,3 +9,4 @@ services:
       - .:/app
     ports:
       - 8050:8050
+    command: python insight/app.py
