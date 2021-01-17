@@ -54,8 +54,8 @@ def to_dataframe(values: SheetData) -> pd.DataFrame:
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     frame = {
         "Date": pd.to_datetime(df["Date"], format="%m/%d/%Y").dt.date,
-        "Department": df["Department"],
-        "Product": df["Product"],
+        "Department": df["Department"].str.strip(),
+        "Product": df["Product"].str.strip(),
         "Sales": df["Sales"].apply(to_decimal),
         "COGS": df["COGS"].apply(to_decimal),
         "Profit": df["Profit"].apply(to_decimal),
