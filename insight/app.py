@@ -67,6 +67,8 @@ df = clean(to_dataframe(fetch_data()))
 departments = df["Department"].unique()
 products = df["Product"].unique()
 
+fig = px.bar(df, x="Date", y="Sales", color="Product")
+
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(
@@ -74,6 +76,9 @@ app.layout = html.Div(
         html.H1(children="Hello Dash"),
         html.Div(
             [
+                dcc.Graph(id="bar-chart", figure=fig),
+            ]
+        ),
                 html.Div(
                     [
                         dcc.Dropdown(
