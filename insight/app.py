@@ -1,20 +1,20 @@
-import httplib2  # type: ignore
+import httplib2
 import os
 import re
 from decimal import Decimal
 from typing import List, Dict, Optional, Any
 
-from apiclient import discovery  # type: ignore
-import dash  # type: ignore
-import dash_table  # type: ignore
-import dash_core_components as dcc  # type: ignore
-import dash_html_components as html  # type: ignore
-from dash.dependencies import Input, Output, State  # type: ignore
-from dash_extensions import Download  # type: ignore
-from dash_extensions.snippets import send_data_frame  # type: ignore
-import pandas as pd  # type: ignore
-import plotly.express as px  # type: ignore
-from dotenv import load_dotenv  # type: ignore
+from apiclient import discovery
+import dash
+import dash_table
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output, State
+from dash_extensions import Download
+from dash_extensions.snippets import send_data_frame
+import pandas as pd
+import plotly.express as px
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -26,7 +26,7 @@ def fetch_data() -> SheetData:
     # TODO: move spreadsheet parameters into config
     spreadsheet_id = "1d-OnGMQG8IlPIG2Ru2SmiH2n9klzMxivfb3mD3imRBE"
     range_name = "Financial Data"
-    sheet = service.spreadsheets()  # pylint: disable=no-member
+    sheet = service.spreadsheets()
     result = (
         sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
     )
@@ -37,7 +37,7 @@ def fetch_data() -> SheetData:
     return values
 
 
-def to_decimal(s: str) -> Optional[Decimal]:  # pylint: disable=unsubscriptable-object
+def to_decimal(s: str) -> Optional[Decimal]:
     pattern = re.compile(r"(?P<paren>\()?(?P<numeral>(\d+,?)+(\.(\d+))?)")
     if match := pattern.search(s):
         groups = match.groupdict()
