@@ -9,11 +9,12 @@ ENV PYTHONUNBUFFERED=1
 # Copy local code to the container image.
 WORKDIR /app
 
+# Install and configure dependency manager
+RUN python -m pip install poetry
+RUN poetry config virtualenvs.create false
 
 # Install production dependencies.
 COPY poetry.lock pyproject.toml ./
-RUN python -m pip install poetry
-RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev --no-root
 
 COPY . ./
