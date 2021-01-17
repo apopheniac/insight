@@ -105,8 +105,7 @@ app.layout = html.Div(
             id="table",
             columns=[{"name": i, "id": i} for i in df.columns],
             data=df.to_dict("records"),
-            page_size=50,
-            style_table={"height": "500px", "overflowY": "auto"},
+            fixed_rows={"headers": True, "data": 0},
         ),
     ]
 )
