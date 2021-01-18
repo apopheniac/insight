@@ -4,9 +4,11 @@ services:
   web:
     build: .
     environment:
-      - PORT=8050
+      - FLASK_APP=insight
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=development
     volumes:
       - .:/app
     ports:
-      - 8050:8050
-    command: python insight/app.py
+      - 5000:5000
+    command: flask run -h 0.0.0.0 -p 5000
