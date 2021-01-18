@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from .app import app as dash_app
 
@@ -15,4 +16,5 @@ def create_app():
     from .models import User
     dash_app.init_app(app)
 
+    migrate = Migrate(app, db)
     return app
