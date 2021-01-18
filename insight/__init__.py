@@ -30,4 +30,10 @@ def create_app():
     dash_app.init_app(app)
 
     migrate = Migrate(app, db)
+
+    for name, method in dash_app.server.view_functions.items():
+        app.logger.info(f"view function: {name} ({method})")
+        if not name.startswith(auth_blueprint.name):
+            dash_app.server.view_functions[name] = login_required(method)
+
     return app
