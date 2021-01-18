@@ -19,4 +19,4 @@ RUN poetry install --no-dev --no-root
 
 COPY . ./
 # Run the web service on container startup. 
-CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 'insight.wsgi:app'
+CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0 'wsgi:app'
