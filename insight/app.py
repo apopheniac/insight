@@ -74,7 +74,10 @@ fig = px.bar(df, x="Date", y="Sales", color="Product")
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
-    __name__, external_stylesheets=external_stylesheets, prevent_initial_callbacks=True
+    __name__,
+    external_stylesheets=external_stylesheets,
+    prevent_initial_callbacks=True,
+    routes_pathname_prefix="/dashboard/",
 )
 app.layout = html.Div(
     [
