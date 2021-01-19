@@ -5,7 +5,7 @@ description = "Web app. Allows a user to upload data from Google Sheets and make
 authors = ["Sam Kitonyi <sam.kitonyi@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 dash = "^1.18.1"
 pandas = "^1.2.0"
 google-api-python-client = "^1.12.8"
@@ -16,6 +16,7 @@ openpyxl = "^3.0.6"
 Flask-SQLAlchemy = "^2.4.4"
 Flask-Login = "^0.5.0"
 Flask-Migrate = "^2.5.3"
+psycopg2-binary = "^2.8.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
