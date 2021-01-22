@@ -14,6 +14,7 @@ from dash_extensions import Download
 from dash_extensions.snippets import send_data_frame
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,7 +57,7 @@ def to_dataframe(values: SheetData) -> pd.DataFrame:
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     frame = {
-        "Date": pd.to_datetime(df["Date"], format="%m/%d/%Y").dt.date,
+        "Date": pd.to_datetime(df["Date"], format="%m/%d/%Y"),
         "Department": df["Department"].str.strip(),
         "Product": df["Product"].str.strip(),
         "Sales": df["Sales"].apply(to_decimal),
@@ -66,11 +67,46 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(frame)
 
 
+def create_pnl_chart(df: pd.DataFrame) -> go.Figure:
+    fig = go.Figure(
+        data=[
+            go.Bar(name="Sales", x=df["Date"], y=df["Sales"]),
+            go.Bar(name="COGS", x=df["Date"], y=df["COGS"]),
+            go.Scatter(
+                name="Profit",
+                x=df["Date"],
+                y=df["Profit"],
+                line=dict(color="darkslategrey", width=1.5),
+                marker=dict(size=5),
+                mode="lines+markers",
+            ),
+        ]
+    )
+    fig.update_layout(
+        dict(
+            title="P&L Trend",
+            colorway=px.colors.qualitative.Set2,
+        )
+    )
+    return fig
+
+
+def monthly_totals(df: pd.DataFrame) -> pd.DataFrame:
+    return (
+        df[["Date", "Sales", "COGS", "Profit"]]
+        .resample("1M", on="Date")
+        .sum()
+        .reset_index()
+    )
+
+
 df = clean(to_dataframe(fetch_data()))
+fig = create_pnl_chart(monthly_totals(df))
 departments = df["Department"].unique()
 products = df["Product"].unique()
 
-fig = px.bar(df, x="Date", y="Sales", color="Product")
+
+# fig = px.bar(df, x="Date", y="Sales", color="Product")
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
