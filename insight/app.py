@@ -1,3 +1,4 @@
+from dash_bootstrap_components._components.FormGroup import FormGroup
 import httplib2
 import os
 import re
@@ -12,6 +13,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash_extensions import Download
 from dash_extensions.snippets import send_data_frame
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -111,53 +113,78 @@ products = df["Product"].unique()
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
     __name__,
-    external_stylesheets=external_stylesheets,
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
     prevent_initial_callbacks=True,
     routes_pathname_prefix="/dashboard/",
 )
-app.layout = html.Div(
-    [
-        html.H1(children="Hello Dash"),
-        html.Div(
-            [
-                dcc.Graph(id="bar-chart", figure=fig),
-            ]
-        ),
-        html.Div(
-            [
-                html.Div(
-                    [
-                        dcc.Dropdown(
-                            id="department-filter",
-                            options=[{"label": d, "value": d} for d in departments],
-                        ),
-                        html.Div(
+app.layout = dbc.Container(
+    html.Div(
+        [
+            dbc.Row(html.H1(children="Hello Dash")),
+            dbc.Row(
+                dbc.Col(
+                    html.Div(
+                        [
+                            dcc.Graph(id="bar-chart", figure=fig),
+                        ]
+                    )
+                )
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.FormGroup(
                             [
-                                html.Button("Download", id="download-button"),
-                                Download(id="download"),
+                                dbc.Label(
+                                    "Department",
+                                    html_for="product-filter",
+                                ),
+                                dbc.Select(
+                                    id="department-filter",
+                                    options=[
+                                        {"label": d, "value": d} for d in departments
+                                    ],
+                                ),
                             ]
-                        ),
-                    ],
-                    style={"width": "48%", "display": "inline-block"},
-                ),
-                html.Div(
-                    [
-                        dcc.Dropdown(
-                            id="product-filter",
-                            options=[{"label": p, "value": p} for p in products],
                         )
-                    ],
-                    style={"width": "48%", "display": "inline-block", "float": "right"},
+                    ),
+                    dbc.Col(
+                        dbc.FormGroup(
+                            [
+                                dbc.Label("Product", html_for="product-filter"),
+                                dbc.Select(
+                                    id="product-filter",
+                                    options=[
+                                        {"label": p, "value": p} for p in products
+                                    ],
+                                ),
+                            ]
+                        )
+                    ),
+                ]
+            ),
+            dbc.Row(
+                dbc.Col(
+                    [
+                        dbc.Button("Download", id="download-button"),
+                        Download(id="download"),
+                    ]
                 ),
-            ]
-        ),
-        dash_table.DataTable(
-            id="sales-table",
-            columns=[{"name": i, "id": i} for i in df.columns],
-            data=df.to_dict("records"),
-            fixed_rows={"headers": True, "data": 0},
-        ),
-    ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dash_table.DataTable(
+                            id="sales-table",
+                            columns=[{"name": i, "id": i} for i in df.columns],
+                            data=df.to_dict("records"),
+                            fixed_rows={"headers": True, "data": 0},
+                        )
+                    )
+                ]
+            ),
+        ]
+    )
 )
 
 
