@@ -141,42 +141,81 @@ app.layout = dbc.Container(
                     dbc.Col(
                         dbc.FormGroup(
                             [
-                                dbc.Label(
-                                    "Department",
-                                    html_for="product-filter",
-                                ),
-                                dbc.Select(
+                                dcc.Dropdown(
                                     id="department-filter",
                                     options=[
                                         {"label": d, "value": d} for d in departments
                                     ],
+                                    placeholder="Filter by department",
                                 ),
-                            ]
+                            ],
+                            # className="mr-3",
                         )
                     ),
                     dbc.Col(
                         dbc.FormGroup(
                             [
-                                dbc.Label("Product", html_for="product-filter"),
-                                dbc.Select(
+                                dcc.Dropdown(
                                     id="product-filter",
                                     options=[
                                         {"label": p, "value": p} for p in products
                                     ],
+                                    placeholder="Filter by product",
                                 ),
-                            ]
+                            ],
+                            # className="mr-3",
                         )
                     ),
-                ]
+                    dbc.Col(
+                        [
+                            dbc.Button("Export", id="download-button"),
+                            Download(id="download"),
+                        ]
+                    ),
+                ],
+                # inline=True,
             ),
-            dbc.Row(
-                dbc.Col(
-                    [
-                        dbc.Button("Download", id="download-button"),
-                        Download(id="download"),
-                    ]
-                ),
-            ),
+            # dbc.Row(
+            #     [
+            #         dbc.Col(
+            #             dbc.FormGroup(
+            #                 [
+            #                     dbc.Label(
+            #                         "Department",
+            #                         html_for="product-filter",
+            #                     ),
+            #                     dbc.Select(
+            #                         id="department-filter",
+            #                         options=[
+            #                             {"label": d, "value": d} for d in departments
+            #                         ],
+            #                     ),
+            #                 ]
+            #             )
+            #         ),
+            #         dbc.Col(
+            #             dbc.FormGroup(
+            #                 [
+            #                     dbc.Label("Product", html_for="product-filter"),
+            #                     dbc.Select(
+            #                         id="product-filter",
+            #                         options=[
+            #                             {"label": p, "value": p} for p in products
+            #                         ],
+            #                     ),
+            #                 ]
+            #             )
+            #         ),
+            #     ]
+            # ),
+            # dbc.Row(
+            #     dbc.Col(
+            #         [
+            #             dbc.Button("Download", id="download-button"),
+            #             Download(id="download"),
+            #         ]
+            #     ),
+            # ),
             dbc.Row(
                 [
                     dbc.Col(
