@@ -58,24 +58,26 @@ def to_dataframe(values: SheetData) -> pd.DataFrame:
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     frame = {
-        "Date": pd.to_datetime(df["Date"], format="%m/%d/%Y"),
+        "DateTime": pd.to_datetime(df["Date"], format="%m/%d/%Y"),
         "Department": df["Department"].str.strip(),
         "Product": df["Product"].str.strip(),
         "Sales": df["Sales"].apply(to_decimal),
         "COGS": df["COGS"].apply(to_decimal),
         "Profit": df["Profit"].apply(to_decimal),
     }
-    return pd.DataFrame(frame)
+    df = pd.DataFrame(frame)
+    df["Date"] = df["DateTime"].dt.date
+    return df
 
 
 def create_pnl_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure(
         data=[
-            go.Bar(name="Sales", x=df["Date"], y=df["Sales"]),
-            go.Bar(name="COGS", x=df["Date"], y=df["COGS"]),
+            go.Bar(name="Sales", x=df["DateTime"], y=df["Sales"]),
+            go.Bar(name="COGS", x=df["DateTime"], y=df["COGS"]),
             go.Scatter(
                 name="Profit",
-                x=df["Date"],
+                x=df["DateTime"],
                 y=df["Profit"],
                 line=dict(color="darkslategrey", width=1.5),
                 marker=dict(size=5),
@@ -94,8 +96,8 @@ def create_pnl_chart(df: pd.DataFrame) -> go.Figure:
 
 def monthly_totals(df: pd.DataFrame) -> pd.DataFrame:
     return (
-        df[["Date", "Sales", "COGS", "Profit"]]
-        .resample("1M", on="Date")
+        df[["DateTime", "Sales", "COGS", "Profit"]]
+        .resample("1M", on="DateTime")
         .sum()
         .reset_index()
     )
@@ -238,6 +240,7 @@ def update_table(
 )
 def handle_download(n_clicks: int, department: Optional[str], product: Optional[str]):
     dff = apply_filters(df, department, product)
+    dff = dff[[c["id"] for c in table_columns]]
     filename = "-".join([s for s in ("Sales", department, product) if s])
     return send_data_frame(dff.to_csv, f"{filename}.csv")
 
