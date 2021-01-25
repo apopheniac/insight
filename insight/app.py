@@ -6,7 +6,7 @@ from typing import List, Dict, Optional, Any
 
 from apiclient import discovery
 import dash
-import dash_table
+from dash_table import DataTable, FormatTemplate
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -106,13 +106,23 @@ fig = create_pnl_chart(monthly_totals(df))
 departments = df["Department"].unique()
 products = df["Product"].unique()
 
-
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     prevent_initial_callbacks=True,
     routes_pathname_prefix="/dashboard/",
 )
+
+money = FormatTemplate.money(2)
+table_columns = [
+    {"id": "Date", "name": "Date"},
+    {"id": "Department", "name": "Department"},
+    {"id": "Product", "name": "Product"},
+    {"id": "Sales", "name": "Sales", "type": "numeric", "format": money},
+    {"id": "COGS", "name": "COGS", "type": "numeric", "format": money},
+    {"id": "Profit", "name": "Profit", "type": "numeric", "format": money},
+]
+
 app.layout = dbc.Container(
     html.Div(
         [
@@ -122,7 +132,7 @@ app.layout = dbc.Container(
                         dbc.NavLink("Log out", href="/logout", external_link=True)
                     ),
                 ],
-                brand="Insight - Business Metrics",
+                brand="Insight | Business Analytics",
                 brand_href="#",
                 color="primary",
                 dark=True,
@@ -175,11 +185,19 @@ app.layout = dbc.Container(
             dbc.Row(
                 [
                     dbc.Col(
-                        dash_table.DataTable(
+                        DataTable(
                             id="sales-table",
-                            columns=[{"name": i, "id": i} for i in df.columns],
+                            columns=table_columns,
                             data=df.to_dict("records"),
-                            fixed_rows={"headers": True, "data": 0},
+                            # fixed_rows={"headers": True, "data": 0},
+                            style_cell_conditional=[
+                                {
+                                    "if": {"column_id": c},
+                                    "textAlign": "left",
+                                }
+                                for c in ["Date", "Department", "Product"]
+                            ],
+                            style_as_list_view=True,
                         )
                     )
                 ]
