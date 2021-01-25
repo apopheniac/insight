@@ -52,7 +52,7 @@ def to_decimal(s: str) -> Optional[Decimal]:
         return None
 
 
-def prepare(values: SheetData) -> pd.DataFrame:
+def prepare_data(values: SheetData) -> pd.DataFrame:
     headers = [s.strip() for s in values[0]]
     rows = values[1:]
     df = pd.DataFrame(rows, columns=headers)
@@ -68,7 +68,7 @@ def prepare(values: SheetData) -> pd.DataFrame:
 
 
 raw_data = fetch_data()
-df = prepare(raw_data)
+df = prepare_data(raw_data)
 
 app = dash.Dash(
     __name__,
