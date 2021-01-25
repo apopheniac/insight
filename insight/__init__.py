@@ -2,7 +2,7 @@ __version__ = "0.1.0"
 
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required
 from flask_migrate import Migrate
@@ -39,6 +39,10 @@ def create_app():
     dash_app.init_app(app)
 
     migrate = Migrate(app, db)
+
+    @app.route("/")
+    def index():
+        return redirect(url_for("/dashboard/"))
 
     for name, method in dash_app.server.view_functions.items():
         app.logger.debug(f"view function: {name} ({method})")
