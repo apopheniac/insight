@@ -191,7 +191,7 @@ app.layout = dbc.Container(
                             id="sales-table",
                             columns=table_columns,
                             data=df.to_dict("records"),
-                            # fixed_rows={"headers": True, "data": 0},
+                            page_size=20,
                             style_cell_conditional=[
                                 {
                                     "if": {"column_id": c},
