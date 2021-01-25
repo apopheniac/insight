@@ -72,7 +72,7 @@ df = prepare_data(raw_data)
 
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_stylesheets=[dbc.themes.MINTY],
     prevent_initial_callbacks=True,
     routes_pathname_prefix="/dashboard/",
 )
