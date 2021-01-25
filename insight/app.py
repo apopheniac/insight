@@ -52,27 +52,23 @@ def to_decimal(s: str) -> Optional[Decimal]:
         return None
 
 
-def to_dataframe(values: SheetData) -> pd.DataFrame:
+def prepare(values: SheetData) -> pd.DataFrame:
     headers = [s.strip() for s in values[0]]
     rows = values[1:]
-    return pd.DataFrame(rows, columns=headers)
-
-
-def clean(df: pd.DataFrame) -> pd.DataFrame:
-    frame = {
-        "DateTime": pd.to_datetime(df["Date"], format="%m/%d/%Y"),
-        "Department": df["Department"].str.strip(),
-        "Product": df["Product"].str.strip(),
-        "Sales": df["Sales"].apply(to_decimal),
-        "COGS": df["COGS"].apply(to_decimal),
-        "Profit": df["Profit"].apply(to_decimal),
-    }
-    df = pd.DataFrame(frame)
+    df = pd.DataFrame(rows, columns=headers)
+    df["DateTime"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
+    df["Product"] = df["Product"].str.strip()
+    df["Department"] = df["Department"].str.strip()
+    df["Sales"] = df["Sales"].apply(to_decimal)
+    df["COGS"] = df["COGS"].apply(to_decimal)
+    df["Profit"] = df["Profit"].apply(to_decimal)
     df["Date"] = df["DateTime"].dt.date
+
     return df
 
 
-df = clean(to_dataframe(fetch_data()))
+raw_data = fetch_data()
+df = prepare(raw_data)
 
 app = dash.Dash(
     __name__,
