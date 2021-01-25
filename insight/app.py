@@ -120,7 +120,17 @@ app = dash.Dash(
 app.layout = dbc.Container(
     html.Div(
         [
-            dbc.Row(html.H1(children="Hello Dash")),
+            dbc.NavbarSimple(
+                [
+                    dbc.NavItem(
+                        dbc.NavLink("Log out", href="/logout", external_link=True)
+                    ),
+                ],
+                brand="Business Metrics",
+                brand_href="#",
+                color="primary",
+                dark=True,
+            ),
             dbc.Row(
                 dbc.Col(
                     html.Div(
