@@ -1,5 +1,4 @@
 from dash_bootstrap_components._components.FormGroup import FormGroup
-import httplib2
 import os
 import re
 from decimal import Decimal
@@ -108,9 +107,6 @@ departments = df["Department"].unique()
 products = df["Product"].unique()
 
 
-# fig = px.bar(df, x="Date", y="Sales", color="Product")
-
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
