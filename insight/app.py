@@ -18,7 +18,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 
-from .layout import set_layout, table_columns
+from .layout import create_pnl_chart, monthly_totals, set_layout, table_columns
 
 load_dotenv()
 
@@ -101,6 +101,18 @@ def update_table(
     department: Optional[str], product: Optional[str]
 ) -> List[Dict[str, Any]]:
     return apply_filters(df, department, product).to_dict("records")
+
+
+@app.callback(
+    Output("bar-chart", "figure"),
+    Input("department-filter", "value"),
+    Input("product-filter", "value"),
+)
+def update_bar_chart(
+    department: Optional[str], product: Optional[str]
+) -> List[Dict[str, Any]]:
+    dff = apply_filters(df, department, product)
+    return create_pnl_chart(monthly_totals(dff))
 
 
 @app.callback(
