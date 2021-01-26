@@ -63,6 +63,7 @@ def prepare_data(values: SheetData) -> pd.DataFrame:
     df["COGS"] = df["COGS"].apply(to_decimal)
     df["Profit"] = df["Profit"].apply(to_decimal)
     df["Date"] = df["DateTime"].dt.date
+    df = df.sort_values(by=["DateTime"])
 
     return df
 
