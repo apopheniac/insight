@@ -45,7 +45,6 @@ def create_app():
         return redirect(url_for("/dashboard/"))
 
     for name, method in dash_app.server.view_functions.items():
-        app.logger.debug(f"view function: {name} ({method})")
         if not name.startswith(auth_blueprint.name):
             dash_app.server.view_functions[name] = login_required(method)
 
