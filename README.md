@@ -47,6 +47,10 @@ gcloud builds submit
 
 to deploy it to Google Cloud Run.
 
+## Roadmap
+
+- Poll Google Sheets and sync data to Postgres. (At the moment, the app just reads data from Sheets at startup and retains it in memory.)
+- Optimise UI for mobile devices. 
 
 ## Built With
 
