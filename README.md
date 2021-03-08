@@ -2,6 +2,8 @@
 
 A web app that allows a user to upload data and make sense of it, across an organization.
 
+Demo: https://insight-ojvzqokjga-ew.a.run.app/dashboard
+
 ## Getting Started
 
 These instructions will get the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project to Google Cloud Platform.
