@@ -6,6 +6,8 @@ from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required
 from flask_migrate import Migrate
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 from .app import app as dash_app
 
@@ -24,7 +26,7 @@ def create_app():
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
 
-    from .models import User
+    from .models import User, Dataset
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -39,6 +41,10 @@ def create_app():
     dash_app.init_app(app)
 
     migrate = Migrate(app, db)
+
+    admin = Admin(app)
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Dataset, db.session))
 
     @app.route("/")
     def index():
