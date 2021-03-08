@@ -26,3 +26,8 @@ class MyTest(LiveServerTestCase):
     def test_server_is_up_and_running(self):
         response = requests.get(self.get_server_url())
         self.assertEqual(response.status_code, 200)
+
+    def test_login_required_for_dashboard(self):
+        url = self.get_server_url()
+        r = requests.get(f"{url}/dashboard/")
+        assert r.url.startswith(f"{url}/login")
