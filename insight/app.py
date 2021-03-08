@@ -77,6 +77,7 @@ app = dash.Dash(
     prevent_initial_callbacks=True,
     routes_pathname_prefix="/dashboard/",
 )
+app.title = "Insight Analytics"
 set_layout(app, df)
 
 
